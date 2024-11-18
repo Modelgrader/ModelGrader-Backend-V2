@@ -1,3 +1,24 @@
-import { SHA256 } from "crypto-js";
+import { Grader } from "../grader";
 
-console.log(SHA256("Hello World").toString());
+const testcases = [
+`1
+`,
+`1
+`,
+`1000
+`,
+]
+
+const code = `
+from time import sleep
+x = int(input())
+
+for i in range(x):
+    for j in range(x):
+        print(i+j, end=" ")
+`;
+
+
+Grader.generateOutput(code, testcases, "py").then((res) => {
+    console.log(res)
+})

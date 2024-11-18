@@ -18,6 +18,43 @@ model Account {
     accessToken     String?  @unique
     refreshToken    String?
     tokenExpireAt   DateTime?
+    problems        Problem[]
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
+}
+
+model Problem {
+    id              String   @id @default(cuid())
+    creatorId       String
+    creator         Account  @relation(fields: [creatorId], references: [id])
+    title           String
+    description     String
+    solution        ProblemSolution?
+    testcases       Testcase[]
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+}
+
+model ProblemSolution {
+    id             String   @id @default(cuid())
+    problemId      String   @unique
+    problem        Problem  @relation(fields: [problemId], references: [id])
+    code           String
+    language       String
+    timeLimitMs     Int
+    memoryLimitKb   Int
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+}
+
+model Testcase {
+    id             String   @id @default(cuid())
+    problemId      String
+    problem        Problem  @relation(fields: [problemId], references: [id])
+    input          String
+    output         String
+    runtimeStatus  String
+    deprecated     Boolean  @default(false)
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
 }
