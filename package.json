@@ -1,0 +1,30 @@
+{
+  "name": "modelgrader-backend-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "start": "node build/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^22.9.0",
+    "prisma": "^5.22.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.1",
+    "@prisma/client": "^5.22.0",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^5.1.0",
+    "fastify-bcrypt": "^1.0.1",
+    "nodemon": "^3.1.7"
+  }
+}
