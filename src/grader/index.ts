@@ -7,8 +7,8 @@ type SandboxSectionStatus = "idle" | "busy";
 export interface RuntimeOutput {
 	isError: boolean;
 	isTimeout: boolean;
-    isMemoryExceeded: boolean;
-    inputFilename: string;
+	isMemoryExceeded: boolean;
+	inputFilename: string;
 	outputFilename: string;
 	executionTimeMs: number;
 }
@@ -29,16 +29,16 @@ export class Grader {
 		code: string,
 		inputList: string[],
 		language: ProgrammingLanguage,
-        timeLimitMs: number,
-        memoryLimitBytes: number,
+		timeLimitMs: number,
+		memoryLimitBytes: number
 	) {
 		const sectionIndex = this.sandboxSectionStatusList.findIndex(
 			(status) => status === "idle"
 		);
-        
+
 		this.sandboxSectionStatusList[sectionIndex] = "busy";
-		
-        const inputFilenameList = [];
+
+		const inputFilenameList: string[] = [];
 		for (let i = 0; i < inputList.length; i++) {
 			// Create and write
 			const filename = `${generateRandomString(16)}.txt`;
@@ -59,19 +59,25 @@ export class Grader {
 					code,
 					inputFilenameList,
 					sectionIndex,
-                    timeLimitMs, 
-                    memoryLimitBytes
+					timeLimitMs,
+					memoryLimitBytes
 				);
 				break;
 		}
-		
-        this.sandboxSectionStatusList[sectionIndex] = "idle";
 
-        return {
-            isError: outputList.some(output => output.isError),
-            isTimeout: outputList.some(output => output.isTimeout),
-            isMemoryExceeded: outputList.some(output => output.isMemoryExceeded),
-            outputList
-        };
+		this.sandboxSectionStatusList[sectionIndex] = "idle";
+
+		return {
+			isError: outputList.some((output) => output.isError),
+			isTimeout: outputList.some((output) => output.isTimeout),
+			isMemoryExceeded: outputList.some(
+				(output) => output.isMemoryExceeded
+			),
+			outputList: outputList.sort(
+				(a, b) =>
+					inputFilenameList.indexOf(a.inputFilename) -
+					inputFilenameList.indexOf(b.inputFilename)
+			),
+		};
 	}
 }

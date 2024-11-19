@@ -9,5 +9,17 @@ export function createProblemRoute(server: FastifyInstance) {
         preHandler: [],
         handler: ProblemView.create,
     })
+    server.route({
+        method: "PUT",
+        url: "/problems/:problemId",
+        preHandler: [],
+        handler: ProblemView.update,
+    })
+    server.route({
+        method: "GET",
+        url: "/problems/:problemId",
+        preHandler: [],
+        handler: ProblemView.get,
+    })
 
 }
