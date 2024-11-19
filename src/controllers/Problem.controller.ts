@@ -1,3 +1,4 @@
+import { AccountSecuredFields } from "../constants/Account.constant";
 import { ProgrammingLanguage } from "../constants/ProgrammingLanguages.constant";
 import { prisma } from "../database";
 import { Grader } from "../grader";
@@ -26,9 +27,10 @@ export default class ProblemController {
 
 		const { code, language, timeLimitMs, memoryLimitKb } = payload.solution;
 		const inputList = payload.testcases.map((testcase) => testcase.input);
+        const inputFilenameList = Grader.writeInputFile(inputList);
 		const outputResponse = await Grader.generateOutput(
 			code,
-			inputList,
+			inputFilenameList,
 			language,
 			timeLimitMs,
 			memoryLimitKb * 1024
@@ -168,7 +170,7 @@ export default class ProblemController {
         return prisma.problem.findUnique({
             where: { id: problemId },
             include: {
-				creator: { select: { username: true, id: true } },
+				creator: AccountSecuredFields,
 				solution: isCreator,
 				testcases: isCreator && {
                     orderBy: {

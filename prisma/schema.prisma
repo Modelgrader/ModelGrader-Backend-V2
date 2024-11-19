@@ -19,6 +19,7 @@ model Account {
     refreshToken    String?
     tokenExpireAt   DateTime?
     problems        Problem[]
+    submissions     Submission[]
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 }
@@ -31,6 +32,7 @@ model Problem {
     description     String
     solution        ProblemSolution?
     testcases       Testcase[]
+    submissions     Submission[]
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 }
@@ -58,6 +60,39 @@ model Testcase {
     isTimeLimitExceeded     Boolean  @default(false)
     isMemoryLimitExceeded   Boolean  @default(false)
     isDeprecated            Boolean  @default(false)
+    submissionTestcases     SubmissionTestcase[]
+    createdAt               DateTime @default(now())
+    updatedAt               DateTime @updatedAt
+}
+
+model Submission {
+    id                  String   @id @default(cuid())
+    submitterId         String
+    submitter           Account  @relation(fields: [submitterId], references: [id])
+    problemId           String
+    problem             Problem  @relation(fields: [problemId], references: [id])
+    submitCode          String
+    submitCodeLanguage  String
+    isPassed            Boolean 
+    score               Int
+    testcases           SubmissionTestcase[]
+    createdAt           DateTime @default(now())
+    updatedAt           DateTime @updatedAt
+}
+
+model SubmissionTestcase {
+    id                      String   @id @default(cuid())
+    submissionId            String
+    submission              Submission  @relation(fields: [submissionId], references: [id])
+    testcaseId              String
+    testcase                Testcase  @relation(fields: [testcaseId], references: [id])
+    outputFilename          String
+    isPassed                Boolean
+    timeMs                  Int
+    memoryKb                Int
+    isError                 Boolean
+    isTimeLimitExceeded     Boolean
+    isMemoryLimitExceeded   Boolean
     createdAt               DateTime @default(now())
     updatedAt               DateTime @updatedAt
 }

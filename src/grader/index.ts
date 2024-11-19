@@ -13,6 +13,8 @@ export interface RuntimeOutput {
 	executionTimeMs: number;
 }
 
+export interface GradingResult {}
+
 function createSandboxSectionStatusList(size: number): SandboxSectionStatus[] {
 	const sandboxSectionStatusList: SandboxSectionStatus[] = [];
 	for (let i = 0; i < size; i++) {
@@ -25,22 +27,9 @@ export class Grader {
 	static sandboxSectionStatusList: SandboxSectionStatus[] =
 		createSandboxSectionStatusList(3);
 
-	static async generateOutput(
-		code: string,
-		inputList: string[],
-		language: ProgrammingLanguage,
-		timeLimitMs: number,
-		memoryLimitBytes: number
-	) {
-		const sectionIndex = this.sandboxSectionStatusList.findIndex(
-			(status) => status === "idle"
-		);
-
-		this.sandboxSectionStatusList[sectionIndex] = "busy";
-
+	static writeInputFile(inputList: string[]) {
 		const inputFilenameList: string[] = [];
 		for (let i = 0; i < inputList.length; i++) {
-			// Create and write
 			const filename = `${generateRandomString(16)}.txt`;
 			writeFileSync(
 				`./dumps/testcases/inputs/${filename}`,
@@ -51,6 +40,24 @@ export class Grader {
 			);
 			inputFilenameList.push(filename);
 		}
+		return inputFilenameList;
+	}
+
+	static async generateOutput(
+		code: string,
+		inputFilenameList: string[],
+		language: ProgrammingLanguage,
+		timeLimitMs: number,
+		memoryLimitBytes: number
+	) {
+		let sectionIndex = -1;
+		while (sectionIndex === -1) {
+			sectionIndex = this.sandboxSectionStatusList.findIndex(
+				(status) => status === "idle"
+			);
+		}
+
+		this.sandboxSectionStatusList[sectionIndex] = "busy";
 
 		let outputList: RuntimeOutput[] = [];
 		switch (language) {
@@ -63,6 +70,9 @@ export class Grader {
 					memoryLimitBytes
 				);
 				break;
+
+			default:
+				throw new Error("Unsupported language");
 		}
 
 		this.sandboxSectionStatusList[sectionIndex] = "idle";
@@ -80,4 +90,9 @@ export class Grader {
 			),
 		};
 	}
+
+	static async grade(
+		outputFilenameList: string[],
+		expectedOutputFileList: string[]
+	) {}
 }

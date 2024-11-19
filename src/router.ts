@@ -4,6 +4,7 @@ import AccountView from "./views/AccountView";
 import AuthView from "./views/AuthView";
 import { verifyToken } from "./middleware/verify-token";
 import { createProblemRoute } from "./routes/problem";
+import { createSubmissionRoute } from "./routes/submission";
 
 const server = fastify();
 
@@ -15,6 +16,7 @@ server.register((server, _, done) => {
     server.addHook("onRequest", verifyToken);
 
     createProblemRoute(server);
+    createSubmissionRoute(server);
 
     done();
 })
