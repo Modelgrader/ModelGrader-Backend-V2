@@ -19,6 +19,6 @@ for i in range(x):
 `;
 
 
-Grader.generateOutput(code, testcases, "py").then((res) => {
-    console.log(res)
-})
+// Grader.generateOutput(code, testcases, "py").then((res) => {
+//     console.log(res)
+// })

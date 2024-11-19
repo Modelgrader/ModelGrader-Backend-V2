@@ -28,7 +28,9 @@ export class Grader {
 	static async generateOutput(
 		code: string,
 		inputList: string[],
-		language: ProgrammingLanguage
+		language: ProgrammingLanguage,
+        timeLimitMs: number,
+        memoryLimitBytes: number,
 	) {
 		const sectionIndex = this.sandboxSectionStatusList.findIndex(
 			(status) => status === "idle"
@@ -57,8 +59,8 @@ export class Grader {
 					code,
 					inputFilenameList,
 					sectionIndex,
-					1000,
-                    1024 * 1024
+                    timeLimitMs, 
+                    memoryLimitBytes
 				);
 				break;
 		}
