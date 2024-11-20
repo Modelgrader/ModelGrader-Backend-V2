@@ -72,4 +72,59 @@ export default class SubmissionController {
         })
 
 	}
+
+    static async get(submissionId: string) {
+        return prisma.submission.findUniqueOrThrow({
+            where: {
+                id: submissionId
+            },
+            include: {
+                submitter: AccountSecuredFields,
+                testcases: true,
+            }
+        })
+    }
+
+    static async getAllByProblemId(problemId: string) {
+        
+        return prisma.submission.findMany({
+            where: {
+                problemId,
+            },
+            include: {
+                submitter: AccountSecuredFields,
+                testcases: true,
+                problem: {
+                    include: {
+                        solution: true,
+                        testcases: true,
+                    }
+                }
+            }
+        })
+    }
+    
+    static async getAllMyByProblemId(problemId: string, accessToken: string) {
+
+        const account = await prisma.account.findUniqueOrThrow({ where: { accessToken } })
+        
+        return prisma.submission.findMany({
+            where: {
+                problemId,
+                submitterId: account.id,
+            },
+            include: {
+                submitter: AccountSecuredFields,
+                testcases: true,
+                problem: {
+                    include: {
+                        solution: true,
+                        testcases: true,
+                    }
+                }
+            }
+        })
+    }
+
+
 }
