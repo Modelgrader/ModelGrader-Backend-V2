@@ -5,6 +5,7 @@ import AuthView from "./views/AuthView";
 import { verifyToken } from "./middleware/verify-token";
 import { createProblemRoute } from "./routes/problem";
 import { createSubmissionRoute } from "./routes/submission";
+import { createCollectionRoute } from "./routes/collection";
 
 const server = fastify();
 
@@ -17,6 +18,7 @@ server.register((server, _, done) => {
 
     createProblemRoute(server);
     createSubmissionRoute(server);
+    createCollectionRoute(server);
 
     done();
 })

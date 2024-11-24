@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import ProblemView from "../views/ProblemView";
+import { problemGuard } from "../middleware/problem-guard";
 
 export function createProblemRoute(server: FastifyInstance) {
     
@@ -12,7 +13,7 @@ export function createProblemRoute(server: FastifyInstance) {
     server.route({
         method: "PUT",
         url: "/problems/:problemId",
-        preHandler: [],
+        preHandler: [problemGuard],
         handler: ProblemView.update,
     })
     server.route({

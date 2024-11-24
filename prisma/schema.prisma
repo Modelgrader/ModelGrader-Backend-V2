@@ -20,6 +20,7 @@ model Account {
     tokenExpireAt   DateTime?
     problems        Problem[]
     submissions     Submission[]
+    collections     Collection[]
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 }
@@ -29,10 +30,11 @@ model Problem {
     creatorId       String
     creator         Account  @relation(fields: [creatorId], references: [id])
     title           String
-    description     String
+    description     String?
     solution        ProblemSolution?
     testcases       Testcase[]
     submissions     Submission[]
+    collections     Collection[]
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 }
@@ -95,4 +97,15 @@ model SubmissionTestcase {
     isMemoryLimitExceeded   Boolean
     createdAt               DateTime @default(now())
     updatedAt               DateTime @updatedAt
+}
+
+model Collection {
+    id          String   @id @default(cuid())
+    creatorId   String
+    creator     Account  @relation(fields: [creatorId], references: [id])
+    title       String
+    description String?
+    problems    Problem[]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 }
