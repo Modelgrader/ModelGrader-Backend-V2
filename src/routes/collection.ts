@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { problemGuard } from "../middleware/problem-guard";
 import CollectionView from "../views/CollectionView";
+import { collectionGuard } from "../middleware/collection-guard";
 
 export function createCollectionRoute(server: FastifyInstance) {
     
@@ -13,13 +14,13 @@ export function createCollectionRoute(server: FastifyInstance) {
     server.route({
         method: "PUT",
         url: "/collections/:collectionId",
-        preHandler: [],
+        preHandler: [collectionGuard],
         handler: CollectionView.update,
     })
     server.route({
         method: "DELETE",
         url: "/collections/:collectionId",
-        preHandler: [],
+        preHandler: [collectionGuard],
         handler: CollectionView.delete,
     })
     server.route({
