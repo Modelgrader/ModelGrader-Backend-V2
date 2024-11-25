@@ -17,6 +17,7 @@ model Account {
     problems        Problem[]
     submissions     Submission[]
     collections     Collection[]
+    courses         Course[]
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 }
@@ -115,6 +116,18 @@ model Collection {
     title       String
     description String?
     problems    Problem[]
+    courses     Course[]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model Course {
+    id          String   @id @default(cuid())
+    creatorId   String
+    creator     Account  @relation(fields: [creatorId], references: [id])
+    title       String
+    description String?
+    collections Collection[]
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 }

@@ -21,9 +21,11 @@ export interface UpdateProblemPayload extends CreateProblemPayload {}
 
 export default class ProblemController {
 	static async create(payload: CreateProblemPayload, accessToken: string) {
-		const creator = await prisma.accountSecret.findUniqueOrThrow({
-			where: { accessToken },
+		const creatorSecret = await prisma.accountSecret.findUniqueOrThrow({
+			where: { accessToken }, include: {account: true},
 		});
+
+        const creator = creatorSecret.account
 
 		const { code, language, timeLimitMs, memoryLimitKb } = payload.solution;
 		const inputList = payload.testcases.map((testcase) => testcase.input);
