@@ -14,9 +14,13 @@ export default class AccountController {
 
 		return prisma.account.create({
 			data: {
-				email: payload.email,
-				password: hashedPassword,
 				username: payload.username,
+                secret: {
+                    create: {
+                        email: payload.email,
+                        password: hashedPassword,
+                    }
+                }
 			},
 		});
 	}

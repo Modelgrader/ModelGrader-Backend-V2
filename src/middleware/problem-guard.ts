@@ -14,7 +14,9 @@ export async function problemGuard(
             id: request.params.problemId
         },
         include: {
-            creator: true
+            creator: {
+                include: { secret: true }
+            }
         }
     })
 
@@ -24,7 +26,7 @@ export async function problemGuard(
         })
     }
 
-    if (problem.creator.accessToken !== token) {
+    if (problem.creator.secret?.accessToken !== token) {
         return reply.code(403).send({
             message: "Forbidden"
         })

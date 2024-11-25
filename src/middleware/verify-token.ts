@@ -16,13 +16,21 @@ export async function verifyToken(
     const accessToken = bearerToken.split(" ")[1];
 
     // Check if the token is valid
-    const account = await prisma.account.findUnique({
+    const accountSecret = await prisma.accountSecret.findUnique({
         where: {
             accessToken
-        }
+        }, include: {account: true}
     })
 
-    if (!account || account.tokenExpireAt! < new Date()) {
+    if (!accountSecret) {
+        return reply.code(401).send({
+            message: "Unauthorized"
+        })
+    }
+
+    const account = accountSecret.account
+
+    if (!account || accountSecret.tokenExpireAt! < new Date()) {
         return reply.code(401).send({
             message: "Unauthorized"
         })

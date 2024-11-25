@@ -14,9 +14,11 @@ export default class SubmissionController {
 		payload: CreateSubmissionPayload,
 		accessToken: string
 	) {
-		const submitter = await prisma.account.findUniqueOrThrow({
-			where: { accessToken },
+		const submitterSecret = await prisma.accountSecret.findUniqueOrThrow({
+			where: { accessToken }, include: { account: true }
 		});
+
+        const submitter = submitterSecret.account;
 
 		const problem = await prisma.problem.findUniqueOrThrow({
 			where: {
@@ -106,7 +108,8 @@ export default class SubmissionController {
     
     static async getAllMyByProblemId(problemId: string, accessToken: string) {
 
-        const account = await prisma.account.findUniqueOrThrow({ where: { accessToken } })
+        const accountSecret = await prisma.accountSecret.findUniqueOrThrow({ where: { accessToken }, include: { account: true } })
+        const account = accountSecret.account
         
         return prisma.submission.findMany({
             where: {

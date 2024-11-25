@@ -11,8 +11,8 @@ export interface UpdateCollectionPayload extends CreateCollectionPayload {}
 
 export default class CollectionController {
     static async create(payload: CreateCollectionPayload, accessToken: string) {
-        const creator = await prisma.account.findUniqueOrThrow({
-            where: { accessToken },
+        const creator = await prisma.accountSecret.findUniqueOrThrow({
+            where: { accessToken }, include: {account: true},
         });
 
         const problems = await prisma.problem.findMany({

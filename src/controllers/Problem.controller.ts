@@ -21,7 +21,7 @@ export interface UpdateProblemPayload extends CreateProblemPayload {}
 
 export default class ProblemController {
 	static async create(payload: CreateProblemPayload, accessToken: string) {
-		const creator = await prisma.account.findUniqueOrThrow({
+		const creator = await prisma.accountSecret.findUniqueOrThrow({
 			where: { accessToken },
 		});
 
@@ -81,7 +81,7 @@ export default class ProblemController {
 		payload: UpdateProblemPayload,
 		accessToken: string
 	) {
-		const creator = await prisma.account.findUniqueOrThrow({
+		const creator = await prisma.accountSecret.findUniqueOrThrow({
 			where: { accessToken },
 		});
 		const problem = await prisma.problem.findUniqueOrThrow({
@@ -161,7 +161,7 @@ export default class ProblemController {
             }
         })
 
-        const account = await prisma.account.findUniqueOrThrow({
+        const account = await prisma.accountSecret.findUniqueOrThrow({
             where: { accessToken }
         })
 
