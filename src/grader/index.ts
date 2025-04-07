@@ -15,6 +15,13 @@ export interface RuntimeOutput {
 
 export interface GradingResult {}
 
+export interface GenerateOutputResponse {
+	isError: boolean;
+	isTimeout: boolean;
+	isMemoryExceeded: boolean;
+	outputList: RuntimeOutput[];
+}
+
 function createSandboxSectionStatusList(size: number): SandboxSectionStatus[] {
 	const sandboxSectionStatusList: SandboxSectionStatus[] = [];
 	for (let i = 0; i < size; i++) {
@@ -49,7 +56,7 @@ export class Grader {
 		language: ProgrammingLanguage,
 		timeLimitMs: number,
 		memoryLimitBytes: number
-	) {
+	): Promise<GenerateOutputResponse> {
 		let sectionIndex = -1;
 		while (sectionIndex === -1) {
 			sectionIndex = this.sandboxSectionStatusList.findIndex(
