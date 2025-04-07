@@ -16,6 +16,7 @@ export default class AuthService {
     }
 
     async login(request: LoginRequest) {
+        console.log('request', request);
         let accountSecret: AccountSecret | null = null;
 
         accountSecret = await this.authRepository.getByEmail(
@@ -30,12 +31,16 @@ export default class AuthService {
             if (!account) {
                 throw new Error('Account not found');
             }
+            
+            if (!account.secret) {
+                throw new Error('Account secret not found');
+            }
 
-            accountSecret = await this.authRepository.get(account.id);
+            accountSecret = await this.authRepository.get(account.secret?.id);
         }
 
         if (!accountSecret) {
-            throw new Error('Account not found');
+            throw new Error('Account secret not found');
         }
 
         const hashedPassword = SHA256(request.password).toString();
@@ -51,7 +56,9 @@ export default class AuthService {
         });
     }
 
-    async validateToken(accessToken: string): Promise<AuthValidateTokenResponse> {
+    async validateToken(
+        accessToken: string
+    ): Promise<AuthValidateTokenResponse> {
         const accountSecret = await this.authRepository.getByAccessToken(
             accessToken
         );
@@ -61,21 +68,24 @@ export default class AuthService {
                 isValid: false,
                 message: 'Invalid access token',
                 secret: null,
-            }
+            };
         }
 
-        if (!accountSecret.tokenExpireAt || accountSecret.tokenExpireAt < new Date()) {
+        if (
+            !accountSecret.tokenExpireAt ||
+            accountSecret.tokenExpireAt < new Date()
+        ) {
             return {
                 isValid: false,
                 message: 'Access token expired',
-                secret: null
-            }
+                secret: null,
+            };
         }
 
         return {
             isValid: true,
             message: null,
-            secret: accountSecret
+            secret: accountSecret,
         };
     }
 }

@@ -1,4 +1,4 @@
-interface ProblemCreatePayload {
+export interface ProblemCreatePayload {
     creatorId: string;
     title: string;
     description?: string;
@@ -16,7 +16,7 @@ interface ProblemCreatePayload {
     }[]
 }
 
-interface ProblemUpdatePayload {
+export interface ProblemUpdatePayload {
     id: string;
     title?: string;
     description?: string;

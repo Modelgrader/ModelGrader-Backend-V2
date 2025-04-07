@@ -2,6 +2,7 @@ import { ProgrammingLanguage } from '../../constants/ProgrammingLanguages.consta
 import { GenerateOutputResponse, Grader } from '../../grader';
 import AuthRepository from '../../repositories/auth/Auth.repository';
 import ProblemRepository from '../../repositories/problem/Problem.repository';
+import { extendTestcaseModel } from '../../utils/testcase';
 import AuthService from '../auth/Auth.service';
 import { ProblemCreateRequest, ProblemUpdateRequest } from './request';
 import {
@@ -31,9 +32,9 @@ export default class ProblemService {
             throw new Error(validate.message!);
         }
 
-        const account = await this.authRepository.getByAccessToken(accessToken);
+        const secret = await this.authRepository.getByAccessToken(accessToken);
 
-        if (!account) {
+        if (!secret) {
             throw new Error('Invalid access token');
         }
 
@@ -51,7 +52,7 @@ export default class ProblemService {
         const problem = await this.problemRepository.create({
             title: request.title,
             description: request.description,
-            creatorId: account.id,
+            creatorId: secret.accountId,
             code: code,
             language: language,
             timeLimitMs: timeLimitMs,
@@ -66,7 +67,10 @@ export default class ProblemService {
             })),
         });
 
-        return problem;
+        return {
+            ...problem,
+            testcases: problem.testcases.map(extendTestcaseModel),
+        };
     }
 
     async update(
@@ -135,8 +139,10 @@ export default class ProblemService {
                 isMemoryExceeded: output.isMemoryExceeded,
             })),
         });
-
-        return problem;
+        return {
+            ...problem,
+            testcases: problem.testcases.map(extendTestcaseModel),
+        };
     }
 
     async get(id: string, accessToken?: string): Promise<ProblemGetResponse> {
@@ -153,7 +159,10 @@ export default class ProblemService {
                 validate.isValid &&
                 validate.secret?.accountId === problem?.creatorId
             ) {
-                return problem;
+                return {
+                    ...problem,
+                    testcases: problem.testcases.map(extendTestcaseModel),
+                };
             }
         }
 
